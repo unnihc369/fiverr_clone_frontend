@@ -1,17 +1,30 @@
-import React, { useState } from "react";
-import CatCard from "./CatCard/CatCard";
-import './CatCardPagination.css'
+import { useState } from "react";
+import CatCard from "./catCard/CatCard.jsx";
+import "./CatCardPagination.css";
 
 const CatCardPagination = ({ cardsData }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const cardsPerPage = 8;
-  console.log(typeof cardsData);
 
   const indexOfLastCard = currentPage * cardsPerPage;
   const indexOfFirstCard = indexOfLastCard - cardsPerPage;
   const currentCards = cardsData.slice(indexOfFirstCard, indexOfLastCard);
 
+  const totalPages = Math.ceil(cardsData.length / cardsPerPage);
+
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   return (
     <div className="catCardContainer">
@@ -21,15 +34,17 @@ const CatCardPagination = ({ cardsData }) => {
         ))}
       </div>
       <div className="pagination">
-        
-        {Array.from(
-          { length: Math.ceil(cardsData.length / cardsPerPage) },
-          (_, index) => index + 1
-        ).map((pageNumber) => (
-          <span key={pageNumber} onClick={() => paginate(pageNumber)}>
-            {pageNumber}
+        <button onClick={goToPreviousPage}>Previous</button>
+        {Array.from({ length: totalPages }, (_, index) => (
+          <span
+            key={index + 1}
+            onClick={() => paginate(index + 1)}
+            className={currentPage === index + 1 ? "active" : ""}
+          >
+            {index + 1}
           </span>
-        ))} 
+        ))}
+        <button onClick={goToNextPage}>Next</button>
       </div>
     </div>
   );
